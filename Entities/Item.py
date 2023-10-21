@@ -1,5 +1,5 @@
 class Item:
-    def __init__(self, id=None, name=None, available_quantity=None, price=None):
+    def __init__(self, id, name, available_quantity, price):
         self._id = id
         self._name = name
         self._available_quantity = available_quantity

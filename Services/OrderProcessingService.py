@@ -6,12 +6,15 @@ from flask import Flask, jsonify, request
 class OrderProcessingService:
     def __init__(self):
         self._orders=[]
+        self._status='True'
     
     #check the avalibility of items from cart
     def check_items_avaibility(self,data,ims):
         res=True
-        for item in data:
-            if(int(ims.get_availablity_by_id(item.get("id")))<=0):
+        for idx in range(len(data)):
+            current_availablity = int(ims.get_availablity_by_id(data[idx].get("id")))
+            required_quantity = int(data[idx]['quantity'])
+            if(current_availablity <= 0 or current_availablity < required_quantity):
                 res = False
                 break
         return res
@@ -33,9 +36,10 @@ class OrderProcessingService:
             return {"Error":[{"ID":"1001","description":"exceed item availablity"}]}
         
     #checkout, generate an order and return a confirmation number or Error code.
-    def checkout(self, order,ims):
+    def checkout(self, order:dict,ims):
         self._orders.append(order)
-        ims.update_by_order(order)
-        return order.id
+        ims.update_quantity_by_order(order)
+        order['status']='confirmed'
+        return order['id']
 
     

@@ -58,11 +58,10 @@ def respose_to_post():
 def response_with_order_api():
     data = request.json
     result=oms.create_pending_order_from_post(data.get("items"),ims)
-    print(list(result.keys())[0])
     if list(result.keys())[0] == 'id':
-        return jsonify({"confirmation number":result.get("id")})
+        return jsonify({"confirmation number":oms.checkout(result,ims)})
     else:
-        if list(result.keys)[0] == "Error":
+        if list(result.keys())[0] == 'Error':
             return jsonify({"Error":"item not available"})
 
 if __name__=='__main__':

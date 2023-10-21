@@ -5,6 +5,7 @@ class InventoryManagementService:
     
     def __init__(self):
         self._inventory=Inventory()
+        self._status='True'
     
     #load some demo items to this inventory
     def load_demo_items(self):
@@ -55,10 +56,27 @@ class InventoryManagementService:
                 break
         return res
     
+    def get_idx_by_id(self,target_id):
+        res = len(self.get_inventory())-1
+        while(res>-1):
+            if target_id == self.get_inventory()[res].get_id():
+                break
+            res = res -1
+        return res
+    
+    # UPDATE: Updates an item based on its index
+    def update_item(self, index, new_item):
+        if 0 <= index < len(self.get_inventory()):
+            self.get_inventory()[index] = new_item
+            return True
+        return False
+    
     def update_quantity_by_order(self,order):
         sold_items=order.get("items")
         for item in sold_items:
-            update_id=self._inventory.get_item_idx(item)
-            new_availability=str(int(self.get_availablity_by_id(self))-int(item.get_quantity()))
-            self._inventory.update_item(update_id,Item(update_id,item.get_name(),new_availability,item.get_price()))
+            update_id=item.get('id')
+            update_idx = self.get_idx_by_id(update_id)
+            new_availability=str(int(self.get_availablity_by_id(update_id))-int(item.get('quantity')))
+            new_item = Item(update_id,item.get('name'),new_availability,item.get('price'))
+            self.update_item(update_idx,new_item)
         return True
