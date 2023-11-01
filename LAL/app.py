@@ -2,7 +2,6 @@ from flask import Flask, jsonify, request
 from Services.InventoryManagementService import InventoryManagementService
 from Services.OrderProcessingService import OrderProcessingService
 from LAL.crud import initialize_db
-from models import db
 #initialize this app
 app = Flask(__name__)
 # configure the mysql database, relative to the app instance folder
