@@ -1,20 +1,18 @@
 from flask import Flask, jsonify, request
 from Services.InventoryManagementService import InventoryManagementService
 from Services.OrderProcessingService import OrderProcessingService
+from LAL.crud import initialize_db
 from models import db
-
 #initialize this app
 app = Flask(__name__)
 # configure the mysql database, relative to the app instance folder
-# app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql+pymysql://root:*Sql12343@localhost/demolal'
 app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///lal.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Suppress warning
 app.config["SQLALCHEMY_ECHO"] = True
-#connect app with db
-db.init_app(app)
-with app.app_context():
-    db.create_all()
-    db.session.commit()
+
+#init app with db and load some dummy data
+initialize_db(app)
+
 #initilize inventory management service
 ims = InventoryManagementService()
 # load demo data to inventory management
