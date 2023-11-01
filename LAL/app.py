@@ -1,9 +1,18 @@
 from flask import Flask, jsonify, request
 from Services.InventoryManagementService import InventoryManagementService
 from Services.OrderProcessingService import OrderProcessingService
-
+from LAL.crud import initialize_db
+from models import db
 #initialize this app
 app = Flask(__name__)
+# configure the mysql database, relative to the app instance folder
+app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///lal.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Suppress warning
+app.config["SQLALCHEMY_ECHO"] = True
+
+#init app with db and load some dummy data
+initialize_db(app)
+
 #initilize inventory management service
 ims = InventoryManagementService()
 # load demo data to inventory management
@@ -64,5 +73,3 @@ def response_with_order_api():
         if list(result.keys())[0] == 'Error':
             return jsonify({"Error":"item not available"})
 
-if __name__=='__main__':
-    app.run(port=5001,debug=True)
