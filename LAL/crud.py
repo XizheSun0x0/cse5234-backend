@@ -8,16 +8,24 @@ from models.user import User
 def initialize_db(app):
     db.init_app(app)
     with app.app_context():
-        db.drop_all()    # Drop all tables
+        db.drop_all()    # Drop all tables created before
         db.create_all()
-        new_item = Item(11,'football',2,3.99)
-        db.session.add(new_item)
+        demo_user_1= User('buckeye.1@osu.edu', 'Brutus')
+        demo_user_2= User('buckeye.2@osu.edu','Buckeye')
+        demo_item_1 = Item(111,'football',2,3.99,'buckeye.1@osu.edu')
+        demo_item_2 = Item(112,'calculator',2,0.99,'buckeye.1@osu.edu')
+        demo_item_3 = Item(113,'power bank',2, 1.99,'buckeye.2@osu.edu')
+        db.session.add(demo_user_1)
+        db.session.add(demo_user_2)
+        db.session.add(demo_item_1)
+        db.session.add(demo_item_2)
+        db.session.add(demo_item_3)
         db.session.commit()
 
 #create new item and add into database
-def create_item(app,id,name,quantity,price):
+def create_item(app,id,name,quantity,price,owner_id):
     with app.app_context():
-        new_item = Item(id,name,quantity,price)
+        new_item = Item(id,name,quantity,price,owner_id)
         db.session.add(new_item)
         db.session.commit()
         
@@ -46,8 +54,9 @@ def create_user(app,id,name,item_id):
 def read_all_item(app):
     with app.app_context():
         items = Item.query.all()
+        items_list = [item.to_dict() for item in items] 
         db.session.commit()
-        return items
+        return items_list
     
 #read item from database
 def read_item(app,id):

@@ -1,9 +1,9 @@
-from flask import Flask, jsonify, request
+from shared.shared import app,jsonify,request
 from Services.InventoryManagementService import InventoryManagementService
 from Services.OrderProcessingService import OrderProcessingService
 from LAL.crud import initialize_db
-#initialize this app
-app = Flask(__name__)
+import os
+
 # configure the mysql database, relative to the app instance folder
 app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///lal.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Suppress warning
@@ -35,14 +35,14 @@ def home():
 #return the current inventory items.
 @app.route(IM_PATH)
 def inventory_api():
-    inventory_json = [item.to_dict() for item in ims.get_available_item()]
+    inventory_json =  ims.get_available_item()
     return jsonify(inventory_json)
 
 #return item with certain id and it is available.
 @app.route(IM_PATH+"/items/<id>")
 def inventory_item_id_api(id):
     target_item=ims.get_available_item_by_id(target_id=id)
-    item_json= [item.to_dict() for item in target_item]
+    item_json=  target_item
     return jsonify(item_json)
 
 #return item with certain name and it is available.
@@ -50,16 +50,8 @@ def inventory_item_id_api(id):
 def inventory_item_name_api():
     item_name=request.args.get('name')
     target_item=ims.get_available_item_by_name(target_name=item_name)
-    item_json=[item.to_dict() for item in target_item]
+    item_json=target_item
     return jsonify(item_json)
-
-# test post request.
-@app.route("/p",methods = ['POST'])
-def respose_to_post():
-    data = request.json
-    print(type(data))
-    dlen = len(data)
-    return jsonify(f"Hi, you request with json with len of {dlen}"),200
 
 #process order request
 @app.route(OP_PATH+"/order",methods=['POST'])
