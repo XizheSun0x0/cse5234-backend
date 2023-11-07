@@ -1,6 +1,6 @@
 from models.item import Item
 from Entities.Inventory import Inventory
-from LAL.crud import read_all_item
+from LAL.crud import read_all_item, update_item_quantity
 from shared.shared import app
 class InventoryManagementService:
     
@@ -45,7 +45,7 @@ class InventoryManagementService:
     def get_availablity_by_id(self,target_id):
         res = 0
         for item in self.get_inventory():
-            if(str(item.get('id'))==target_id):
+            if(item.get('id')==target_id):
                 res = item.get('available_quantity')
                 break
         return res
@@ -71,6 +71,7 @@ class InventoryManagementService:
             update_id=item.get('id')
             update_idx = self.get_idx_by_id(update_id)
             new_availability=str(int(self.get_availablity_by_id(update_id))-int(item.get('quantity')))
-            new_item = Item(update_id,item.get('name'),new_availability,item.get('price'))
+            # new_item = Item(update_id,item.get('name'),new_availability,item.get('price'),)
+            new_item = update_item_quantity(app,update_id,new_availability)
             self.update_item(update_idx,new_item)
         return True

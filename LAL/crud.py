@@ -138,6 +138,19 @@ def delete_user(app,id):
         if user is not None:
             db.session.delete(user)
             db.session.commit()
+            
+def update_item_quantity(app,target_id,new_quantity):
+    with app.app_context():
+        item = db.session.query(Item).filter(Item.id == target_id).first()
+        if item:
+        # Update the quantity
+            item.quantity = new_quantity
+        # Commit the transaction
+            db.session.commit()
+            return item
+        else:
+        # If the item does not exist, handle appropriately (e.g., raise an error or return None)
+            return None
 
 # TODO implement update after back and front end combination.
         
