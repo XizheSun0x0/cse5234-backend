@@ -22,9 +22,12 @@ class Item(db.Model):
     def __repr__(self):
         return '<Item %r>' % self.id
     
+    def get_id(self):
+        return self.id
+    
     def to_dict(self):
         return {
-            'id': self.id,
+            'id': self.get_id(),
             'name': self.name,
             'available_quantity': self.quantity,
             'price': self.price,

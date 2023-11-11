@@ -59,9 +59,9 @@ class InventoryManagementService:
         return res
     
     # UPDATE: Updates an item based on its index
-    def update_item(self, index, new_item):
+    def update_item_quantity_by_id(self, index, new_availability):
         if 0 <= index < len(self.get_inventory()):
-            self.get_inventory()[index] = new_item
+            self.get_inventory()[index]['available_quantity'] =float(new_availability)
             return True
         return False
     
@@ -71,7 +71,6 @@ class InventoryManagementService:
             update_id=item.get('id')
             update_idx = self.get_idx_by_id(update_id)
             new_availability=str(int(self.get_availablity_by_id(update_id))-int(item.get('quantity')))
-            # new_item = Item(update_id,item.get('name'),new_availability,item.get('price'),)
             new_item = update_item_quantity(app,update_id,new_availability)
-            self.update_item(update_idx,new_item)
+            self.update_item_quantity_by_id(update_idx,new_availability)
         return True
