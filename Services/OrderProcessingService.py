@@ -36,10 +36,15 @@ class OrderProcessingService:
             return {"Error":[{"ID":"1001","description":"exceed item availablity"}]}
         
     #checkout, generate an order and return a confirmation number or Error code.
-    def checkout(self, order:dict,ims):
+    async def checkout(self, order:dict,ims):
         self._orders.append(order)
         ims.update_quantity_by_order(order)
         order['status']='confirmed'
         return order['id']
-
+    
+    async def invoke_payment(self,payment):
+        pass
+    
+    async def invoke_shipment(self,shipment):
+        pass
     

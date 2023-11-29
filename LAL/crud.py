@@ -3,6 +3,8 @@ from models.item import Item
 from models.order import Order
 from models.payment import Payment
 from models.user import User
+from models.payment import Payment
+from models.shipment import Shipment
 
 # initialize database and then connect it with flask app 
 def initialize_db(app):
@@ -15,11 +17,15 @@ def initialize_db(app):
         demo_item_1 = Item(111,'football',2,3.99,'buckeye.1@osu.edu')
         demo_item_2 = Item(112,'calculator',2,0.99,'buckeye.1@osu.edu')
         demo_item_3 = Item(113,'power bank',2, 1.99,'buckeye.2@osu.edu')
+        demo_item_4 = Item(114,'bag',1, 8.99,'buckeye.2@osu.edu')
+        demo_item_5 = Item(115,'power drink',4, 2.99,'buckeye.2@osu.edu')
         db.session.add(demo_user_1)
         db.session.add(demo_user_2)
         db.session.add(demo_item_1)
         db.session.add(demo_item_2)
         db.session.add(demo_item_3)
+        db.session.add(demo_item_4)
+        db.session.add(demo_item_5)
         db.session.commit()
 
 #create new item and add into database
