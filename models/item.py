@@ -7,7 +7,7 @@ class Item(db.Model):
     name = db.Column(db.String(50))
     quantity = db.Column(db.SmallInteger)
     price = db.Column(db.Float())
-    # owner_id = db.Column(db.String(50), db.ForeignKey('User.id'))  # Make sure the 'user' table name is correct
+    owner_id = db.Column(db.String(50), db.ForeignKey('User.id'))  # Make sure the 'user' table name is correct
 
     def __init__(self, id, name, quantity, price):
         self.id = id
