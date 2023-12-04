@@ -1,8 +1,5 @@
-from Entities.Cart import Cart
-from Entities.Order import Order
-from Entities.SellingItem import SellingItem
+from models.order import Order
 from Utility.Utility import IdGenerator as oig
-from flask import Flask, jsonify, request
 import httpx
 class OrderProcessingService:
     def __init__(self):
