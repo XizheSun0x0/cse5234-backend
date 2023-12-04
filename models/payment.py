@@ -6,7 +6,7 @@ class Payment(db.Model):
     Card_N = db.Column(db.String(30), unique=True)
     Full_Name = db.Column(db.String(80))
     CVV = db.Column(db.SmallInteger)
-    Exp_Date = db.Column(db.SmallInteger)
+    Exp_Date = db.Column(db.String(30))
     
     def __init__(self,email,card_n,full_name,cvv,exp):
         self.Email=email
@@ -17,3 +17,15 @@ class Payment(db.Model):
         
     def __repr__(self):
         return '<Payment %r>' % self.id
+    
+    def to_dict(self,amount):
+        return {
+  "business_entity_name": "LAL",
+  "business_entity_account": "LAL20230821",
+  "amount": str(amount),
+  "customer_name": self.Full_Name,
+  "credit_card_number": self.Card_N,
+  "expiration_date": self.Exp_Date,
+  "cvv_code": str(self.CVV)
+}
+

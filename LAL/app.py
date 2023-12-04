@@ -55,11 +55,12 @@ def inventory_item_name_api():
 
 #process order request
 @app.route(OP_PATH+"/order",methods=['POST'])
-def response_with_order_api():
+async def response_with_order_api():
     data = request.json
-    result=oms.create_pending_order_from_post(data.get("items"),ims)
+    result=oms.create_pending_order_from_post(data.get("selected_items"),ims)
     if list(result.keys())[0] == 'id':
-        return jsonify({"confirmation number":oms.checkout(result,ims)})
+        order_id = oms.checkout(result,ims)
+        return jsonify({"confirmation number": order_id})
     else:
         if list(result.keys())[0] == 'Error':
             return jsonify({"Error":"item not available"})
