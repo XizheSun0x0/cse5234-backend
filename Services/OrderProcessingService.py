@@ -2,6 +2,7 @@ from models.order import Order
 from Utility.Utility import IdGenerator as oig
 from shared.shared import payment_url,payment_endpoint,shipment_url,shipment_init_endpoint,shipment_request_endpoint
 import httpx
+from shared.shared import jsonify
 class OrderProcessingService:
     def __init__(self):
         self._orders=[]
@@ -37,8 +38,8 @@ class OrderProcessingService:
             "business_entity_account": "20230821",
             "amount": 10,
             "customer_name": data['name'],
-            "credit_card_number": data['credit_card_number'],
-            "expiration_date": data['expire_dat'],
+            "credit_card_number": data['credit_card_numer'],
+            "expiration_date": data['expir_date'],
             "cvv_code": data['cvvcode']
         }
     
@@ -63,12 +64,14 @@ class OrderProcessingService:
     async def invoke_payment(self,payment_info):
         async with httpx.AsyncClient() as client:
             response = await client.post(payment_url + payment_endpoint, json=payment_info)
+        response.json()
         return response.json()
     
     async def invoke_shipment(self,shipment):
         async with httpx.AsyncClient() as client:
-            response_init = await client.post(shipment_url+ shipment_init_endpoint, {'message':"shipment request"})
-            if( "message" in response_init and response_init["message"].startswith("Please")):
+            response_init = await client.post(shipment_url+ shipment_init_endpoint,json={'message':"shipment request"})
+            response_init_content = response_init.json()
+            if( "message" in response_init_content and response_init_content["message"].startswith("Please")):
                 async with httpx.AsyncClient() as client:
                     response = await client.post(shipment_url + shipment_request_endpoint,json=shipment)
         return response.json()
