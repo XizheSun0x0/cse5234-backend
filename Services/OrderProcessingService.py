@@ -1,6 +1,8 @@
 from models.order import Order
 from Utility.Utility import IdGenerator as oig
+from shared.shared import payment_url,payment_endpoint,shipment_url,shipment_init_endpoint,shipment_request_endpoint
 import httpx
+from shared.shared import jsonify
 class OrderProcessingService:
     def __init__(self):
         self._orders=[]
@@ -18,10 +20,28 @@ class OrderProcessingService:
         return res
     
     def get_shipping_info(self,data):
-        return {}
+        return {
+            "recipient_name": data['name'],
+            "postal_address": data['address_1'] + data['address_2'] 
+            + ', ' + data['city'] + ', ' + data['state'] + ', ' + data['zip'],
+            "email": "string",
+            "number_of_items": len(data['selected_items']),
+            "total_weight": 1,
+            "total_dimension": "1",
+            "business_entity_name": "LAL",
+            "entity_account_number": "20230821"
+        }
     
     def get_payment_info(self,data):
-        return {}
+        return {
+            "business_entity_name": "LAL",
+            "business_entity_account": "20230821",
+            "amount": 10,
+            "customer_name": data['name'],
+            "credit_card_number": data['credit_card_numer'],
+            "expiration_date": data['expir_date'],
+            "cvv_code": data['cvvcode']
+        }
     
     #generate pending order form POST json.
     def create_pending_order_from_post(self,data,ims):
@@ -42,18 +62,18 @@ class OrderProcessingService:
     
     # send a post request to the payment processing microservice endpoint return the microservice's response
     async def invoke_payment(self,payment_info):
-        payment_endpoint = "https://3o6x7j5m5pqujjkor6u22e7wwe0eieir.lambda-url.us-east-2.on.aws"
         async with httpx.AsyncClient() as client:
-            response = await client.post(payment_endpoint+"/payment-processing/credit-card-processing/payment", json=payment_info)
+            response = await client.post(payment_url + payment_endpoint, json=payment_info)
+        response.json()
         return response.json()
     
     async def invoke_shipment(self,shipment):
-        shipment_endpoint = "https://gl2s3honkh7noncsfwft2lrw2u0cuwjc.lambda-url.us-east-2.on.aws"
         async with httpx.AsyncClient() as client:
-            response_init = await client.post(shipment_endpoint+"/shipment-processing/initiation", {'message':"shipment request"})
-            if( "message" in response_init and response_init["message"].startswith("Please")):
+            response_init = await client.post(shipment_url+ shipment_init_endpoint,json={'message':"shipment request"})
+            response_init_content = response_init.json()
+            if( "message" in response_init_content and response_init_content["message"].startswith("Please")):
                 async with httpx.AsyncClient() as client:
-                    response = await client.post(shipment_endpoint+"/shipment-processing/shipment",json=shipment)
+                    response = await client.post(shipment_url + shipment_request_endpoint,json=shipment)
         return response.json()
         
     

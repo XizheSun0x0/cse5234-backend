@@ -5,6 +5,7 @@ from LAL.crud import initialize_db
 from .privacy import mysqlpw
 
 # configure the mysql database, relative to the app instance folder
+# test locally to avoid aws charge.
 # app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///lal.db'
 app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql+pymysql://root:'+ mysqlpw +'@localhost/CSE5234'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Suppress warning
@@ -59,10 +60,17 @@ def inventory_item_name_api():
 async def response_with_order_api():
     data = request.json
     result=oms.create_pending_order_from_post(data.get("selected_items"),ims)
-    if list(result.keys())[0] == 'id':
-        order_id = oms.checkout(result,ims)
-        return jsonify({"confirmation number": order_id})
-    else:
-        if list(result.keys())[0] == 'Error':
-            return jsonify({"Error":"item not available"})
+    shipping_info = oms.get_shipping_info(data)
+    payment_info = oms.get_payment_info(data)
+    shipping_response = await oms.invoke_shipment(shipping_info)
+    payment_response = await oms.invoke_payment(payment_info)
+    if 'id' in result:
+        order_id = oms.checkout(result, ims)
+        order_response = {'order_confirmation_number': order_id}
+
+        # Merging responses (assuming shipping_response and payment_response are dictionaries)
+        combined_response = {**order_response, **shipping_response, **payment_response}
+        return jsonify(combined_response)
+    elif 'Error' in result:
+        return jsonify({"Error": "item not available"})
 

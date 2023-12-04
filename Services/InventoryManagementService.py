@@ -1,5 +1,3 @@
-# from models.item import Item
-from Entities.Inventory import Inventory
 from LAL.crud import read_all_item, update_item_quantity
 from shared.shared import app
 
