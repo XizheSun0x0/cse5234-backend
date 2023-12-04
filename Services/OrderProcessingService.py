@@ -1,5 +1,6 @@
 from models.order import Order
 from Utility.Utility import IdGenerator as oig
+from shared.shared import payment_url,payment_endpoint,shipment_url,shipment_init_endpoint,shipment_request_endpoint
 import httpx
 class OrderProcessingService:
     def __init__(self):
@@ -42,18 +43,16 @@ class OrderProcessingService:
     
     # send a post request to the payment processing microservice endpoint return the microservice's response
     async def invoke_payment(self,payment_info):
-        payment_endpoint = "https://3o6x7j5m5pqujjkor6u22e7wwe0eieir.lambda-url.us-east-2.on.aws"
         async with httpx.AsyncClient() as client:
-            response = await client.post(payment_endpoint+"/payment-processing/credit-card-processing/payment", json=payment_info)
+            response = await client.post(payment_url + payment_endpoint, json=payment_info)
         return response.json()
     
     async def invoke_shipment(self,shipment):
-        shipment_endpoint = "https://gl2s3honkh7noncsfwft2lrw2u0cuwjc.lambda-url.us-east-2.on.aws"
         async with httpx.AsyncClient() as client:
-            response_init = await client.post(shipment_endpoint+"/shipment-processing/initiation", {'message':"shipment request"})
+            response_init = await client.post(shipment_url+ shipment_init_endpoint, {'message':"shipment request"})
             if( "message" in response_init and response_init["message"].startswith("Please")):
                 async with httpx.AsyncClient() as client:
-                    response = await client.post(shipment_endpoint+"/shipment-processing/shipment",json=shipment)
+                    response = await client.post(shipment_url + shipment_request_endpoint,json=shipment)
         return response.json()
         
     
