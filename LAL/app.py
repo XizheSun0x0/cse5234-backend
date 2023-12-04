@@ -2,10 +2,11 @@ from shared.shared import app,jsonify,request
 from Services.InventoryManagementService import InventoryManagementService
 from Services.OrderProcessingService import OrderProcessingService
 from LAL.crud import initialize_db
-import os
+from .privacy import mysqlpw
 
 # configure the mysql database, relative to the app instance folder
-app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///lal.db'
+# app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///lal.db'
+app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql+pymysql://root:'+ mysqlpw +'@localhost/CSE5234'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Suppress warning
 app.config["SQLALCHEMY_ECHO"] = True
 
