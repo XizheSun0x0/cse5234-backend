@@ -19,10 +19,28 @@ class OrderProcessingService:
         return res
     
     def get_shipping_info(self,data):
-        return {}
+        return {
+            "recipient_name": data['name'],
+            "postal_address": data['address_1'] + data['address_2'] 
+            + ', ' + data['city'] + ', ' + data['state'] + ', ' + data['zip'],
+            "email": "string",
+            "number_of_items": len(data['selected_items']),
+            "total_weight": 1,
+            "total_dimension": "1",
+            "business_entity_name": "LAL",
+            "entity_account_number": "20230821"
+        }
     
     def get_payment_info(self,data):
-        return {}
+        return {
+            "business_entity_name": "LAL",
+            "business_entity_account": "20230821",
+            "amount": 10,
+            "customer_name": data['name'],
+            "credit_card_number": data['credit_card_number'],
+            "expiration_date": data['expire_dat'],
+            "cvv_code": data['cvvcode']
+        }
     
     #generate pending order form POST json.
     def create_pending_order_from_post(self,data,ims):
