@@ -13,3 +13,8 @@ Recommended Python version is 3.11.
 ## About the Database
 This project uses SQLite3 as the database management system.
 The database is stored in '/instance/lal.db'.
+
+## Test locally
+```bash
+    gunicorn wsgi_handler:app
+```
