@@ -11,4 +11,4 @@ shipment_request_endpoint = "/shipment-processing/shipment"
 #initialize this app
 app = Flask(__name__)
 
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "https://main.d16zhsrumswhkr.amplifyapp.com"}})
