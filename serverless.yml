@@ -1,0 +1,29 @@
+service: flask-lal-app-6
+
+provider:
+  name: aws
+  runtime: python3.11
+  stage: dev
+  region: us-east-2
+
+functions:
+  app:
+    handler: wsgi_handler.handler
+    events:
+      - http:
+          path: /
+          method: get
+      - http:
+          path: /{proxy+}
+          method: any
+
+custom:
+  wsgi:
+    app: run.app
+    packRequirements: false
+  pythonRequirements:
+    dockerizePip: non-linux
+
+plugins:
+  - serverless-wsgi
+  - serverless-python-requirements
