@@ -9,33 +9,33 @@ from models.shipment import Shipment
 # initialize database and then connect it with flask app 
 def initialize_db(app):
     db.init_app(app)
-    with app.app_context():
-        db.drop_all()    # Drop all tables created before
-        db.create_all()
+    # with app.app_context():
+    #     db.drop_all()    # Drop all tables created before
+    #     db.create_all()
 
-        # Creating demo users
-        demo_user_1 = User(id='buckeye.1@osu.edu', name='Brutus')
-        demo_user_2 = User(id='buckeye.2@osu.edu', name='Buckeye')
+    #     # Creating demo users
+    #     demo_user_1 = User(id='buckeye.1@osu.edu', name='Brutus')
+    #     demo_user_2 = User(id='buckeye.2@osu.edu', name='Buckeye')
 
-        # Adding demo users to the session
-        db.session.add(demo_user_1)
-        db.session.add(demo_user_2)
+    #     # Adding demo users to the session
+    #     db.session.add(demo_user_1)
+    #     db.session.add(demo_user_2)
 
-        # Committing the session with users
-        db.session.commit()
+    #     # Committing the session with users
+    #     db.session.commit()
 
-        # Creating demo items
-        demo_item_1 = Item(id=111, name='football', quantity=29999, price=3.99, owner_id='buckeye.1@osu.edu')
-        demo_item_2 = Item(id=112, name='calculator', quantity=29999, price=0.99, owner_id='buckeye.1@osu.edu')
-        demo_item_3 = Item(id=113, name='power bank', quantity=29999, price=1.99, owner_id='buckeye.2@osu.edu')
+    #     # Creating demo items
+    #     demo_item_1 = Item(id=111, name='football', quantity=29999, price=3.99, owner_id='buckeye.1@osu.edu')
+    #     demo_item_2 = Item(id=112, name='calculator', quantity=29999, price=0.99, owner_id='buckeye.1@osu.edu')
+    #     demo_item_3 = Item(id=113, name='power bank', quantity=29999, price=1.99, owner_id='buckeye.2@osu.edu')
 
-        # Adding demo items to the session
-        db.session.add(demo_item_1)
-        db.session.add(demo_item_2)
-        db.session.add(demo_item_3)
+    #     # Adding demo items to the session
+    #     db.session.add(demo_item_1)
+    #     db.session.add(demo_item_2)
+    #     db.session.add(demo_item_3)
 
-        # Committing the session with both users and items
-        db.session.commit()
+    #     # Committing the session with both users and items
+    #     db.session.commit()
 
 
 #create new item and add into database
